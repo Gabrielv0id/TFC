@@ -1,9 +1,9 @@
-import { 
+import {
   Model,
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
-  DataTypes 
+  DataTypes,
 } from 'sequelize';
 import db from '.';
 import Team from './TeamModel';
