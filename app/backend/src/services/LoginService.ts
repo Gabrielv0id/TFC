@@ -17,6 +17,14 @@ export default class LoginService {
     return token;
   }
 
+  static async findById(id: number): Promise<UserModel> {
+    const user = await UserModel.findByPk(id);
+
+    if (!user) throw new HttpError(StatusCodes.NOT_FOUND, 'User Not Found!');
+
+    return user;
+  }
+
   private static _validateUser(user: UserModel | null, password: string) {
     if (!user || !Crypt.compare(password, user.password)) {
       throw new HttpError(StatusCodes.UNAUTHORIZED, 'Invalid email or password');
