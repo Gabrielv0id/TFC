@@ -5,7 +5,7 @@ import chaiHttp = require('chai-http');
 
 import { app } from '../app';
 
-import TeamModel from '../database/models/TeamModel';
+import Team from '../database/models/TeamModel';
 import { Response } from 'superagent';
 import teams from './mocks/Teams.mocks';
 
@@ -20,32 +20,32 @@ describe('Teams', () => {
    let chaiHttpResponse: Response;
   describe('GET /teams', () => {
     beforeEach(async () => {
-      sinon.stub(TeamModel, 'findAll').resolves(teams as TeamModel[]);
+      sinon.stub(Team, 'findAll').resolves(teams as Team[]);
     });
 
     it('deve retornar status 200 e todos os times', async () => {
      chaiHttpResponse = await chai.request(app).get('/teams');
 
      expect(chaiHttpResponse.status).to.be.equal(200);
-     expect(chaiHttpResponse.body).to.be.equal(teams);
+     expect(chaiHttpResponse.body).to.deep.equal(teams);
     });
   });
 
   describe('GET /teams/:id', () => {
     it('deve retornar status 200 e o time correto', async () => {
-      sinon.stub(TeamModel, 'findByPk').resolves(teams[0] as TeamModel);
+      sinon.stub(Team, 'findByPk').resolves(teams[0] as Team);
       chaiHttpResponse = await chai.request(app).get('/teams/1');
 
       expect(chaiHttpResponse.status).to.be.equal(200);
-      expect(chaiHttpResponse.body).to.be.equal(teams[0]);
+      expect(chaiHttpResponse.body).to.deep.equal(teams[0]);
     });
 
     it('deve retornar o erro 404 caso o id esteja incorreto', async () => {
-      sinon.stub(TeamModel, 'findByPk').resolves(undefined);
+      sinon.stub(Team, 'findByPk').resolves(undefined);
       chaiHttpResponse = await chai.request(app).get('/teams/999');
 
       expect(chaiHttpResponse.status).to.be.equal(404);
-      expect(chaiHttpResponse.body).to.be.equal({ message: "Team not found!" });
+      expect(chaiHttpResponse.body).to.deep.equal({ message: "Team not found!" });
     });
   });
 });
