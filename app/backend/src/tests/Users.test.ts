@@ -8,6 +8,7 @@ import { app } from '../app';
 import { Response } from 'superagent';
 import users from './mocks/Users.mock';
 import User from '../database/models/UserModel';
+import Token from '../utils/Token'
 
 chai.use(chaiHttp);
 
@@ -108,6 +109,32 @@ describe('Users', () => {
       expect(chaiHttpResponse.status).to.be.equal(200);
       expect(chaiHttpResponse.body).to.be.an('object');
       expect(chaiHttpResponse.body).to.have.property('token')
+    });
+  });
+  describe('GET /login/role', () => {
+    it('retorna status 401 e uma mensagem se não tiver um token', async () => {
+      chaiHttpResponse = await chai.request(app).get('/login/role')
+
+      expect(chaiHttpResponse.status).to.be.equal(401);
+      expect(chaiHttpResponse.body).to.be.deep.equal({ message: 'Token not found'});
+    });
+
+    it('retorna status 401 e uma mensagem se o token não estiver correto ou expirado', async () => {
+      chaiHttpResponse = await chai.request(app).get('/login/role').set('authorization', 'wrong-token');
+
+      expect(chaiHttpResponse.status).to.be.equal(401);
+      expect(chaiHttpResponse.body).to.be.deep.equal({ message: 'Token must be a valid token'});
+    });
+
+    it('retorna status 200 e a role do usuario caso esteja tudo correto', async () => {
+      const token = new Token().generate({ id: 1, email: 'admin@admin.com'});
+      sinon.stub(User, 'findOne').resolves(users[0] as User);
+
+      chaiHttpResponse = await chai.request(app).get('/login/role').set('authorization', token);
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(chaiHttpResponse.body).to.be.an('object');
+      expect(chaiHttpResponse.body).to.be.deep.equal({ role: 'admin' });
     });
   });
 });
