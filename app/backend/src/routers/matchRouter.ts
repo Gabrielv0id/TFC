@@ -9,7 +9,7 @@ matchRouter.post('/', validateTokenMiddleware, (req, res) => MatchController.cre
 matchRouter.patch(
   '/:id/finish',
   validateTokenMiddleware,
-  (req, res) => MatchController.removeMatch(req, res),
+  (req, res) => MatchController.finishMatch(req, res),
 );
 matchRouter.patch(
   '/:id',

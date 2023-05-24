@@ -24,8 +24,8 @@ export default class MatchService {
     return matches;
   }
 
-  static async removeById(id: number) {
-    await Match.destroy({ where: { id } });
+  static async finishMatch(id: number) {
+    await Match.update({ inProgress: false }, { where: { id } });
   }
 
   static async updateById({ id, homeTeamGoals, awayTeamGoals }: UpdateMatchDetails) {

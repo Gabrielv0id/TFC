@@ -11,10 +11,10 @@ export default class MatchController {
     return res.status(StatusCodes.OK).json(matches);
   }
 
-  static async removeMatch(req: Request, res: Response) {
+  static async finishMatch(req: Request, res: Response) {
     const { id } = req.params;
 
-    await MatchService.removeById(Number(id));
+    await MatchService.finishMatch(Number(id));
 
     return res.status(StatusCodes.OK).json({ message: 'Finished' });
   }
