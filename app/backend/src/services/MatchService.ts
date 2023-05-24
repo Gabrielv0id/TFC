@@ -1,5 +1,7 @@
 import Team from '../database/models/TeamModel';
 import Match from '../database/models/MatchModel';
+import UpdateMatchDetails from '../interfaces/IUpdateMatch';
+import CreateMatchDetails from '../interfaces/ICreateMatch';
 
 export default class MatchService {
   static async getAll(inProgress: string | undefined): Promise<Match[]> {
@@ -19,7 +21,29 @@ export default class MatchService {
         { model: Team, as: 'awayTeam', attributes: ['teamName'] },
       ],
     });
-
     return matches;
+  }
+
+  static async removeById(id: number) {
+    await Match.destroy({ where: { id } });
+  }
+
+  static async updateById({ id, homeTeamGoals, awayTeamGoals }: UpdateMatchDetails) {
+    await Match.update({
+      homeTeamGoals,
+      awayTeamGoals,
+    }, { where: { id } });
+  }
+
+  static async createMatch(createMatchParams: CreateMatchDetails) {
+    const createdMatch = await Match.create({
+      homeTeamId: createMatchParams.homeTeamId,
+      awayTeamId: createMatchParams.awayTeamId,
+      homeTeamGoals: createMatchParams.homeTeamGoals,
+      awayTeamGoals: createMatchParams.awayTeamGoals,
+      inProgress: true,
+    });
+
+    return createdMatch;
   }
 }
