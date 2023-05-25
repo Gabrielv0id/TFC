@@ -11,7 +11,7 @@ export default class TeamService {
   static async findById(id: number): Promise<TeamModel> {
     const team = await TeamModel.findByPk(id);
 
-    if (!team) throw new HttpError(StatusCodes.NOT_FOUND, 'Team not found!');
+    if (!team) throw new HttpError(StatusCodes.NOT_FOUND, 'There is no team with such id!');
 
     return team;
   }

@@ -2,6 +2,7 @@ import Team from '../database/models/TeamModel';
 import Match from '../database/models/MatchModel';
 import UpdateMatchDetails from '../interfaces/IUpdateMatch';
 import CreateMatchDetails from '../interfaces/ICreateMatch';
+import TeamService from './TeamService';
 
 export default class MatchService {
   static async getAll(inProgress: string | undefined): Promise<Match[]> {
@@ -36,6 +37,9 @@ export default class MatchService {
   }
 
   static async createMatch(createMatchParams: CreateMatchDetails) {
+    await TeamService.findById(createMatchParams.homeTeamId);
+    await TeamService.findById(createMatchParams.awayTeamId);
+
     const createdMatch = await Match.create({
       homeTeamId: createMatchParams.homeTeamId,
       awayTeamId: createMatchParams.awayTeamId,
